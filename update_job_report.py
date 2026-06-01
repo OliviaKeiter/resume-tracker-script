@@ -49,16 +49,16 @@ DEFAULT_STATUS = "Applied"
 # Options offered in the Status dropdown of the .xlsx, each with (fill, font) colors.
 # Order here is also the order shown in the summary legend.
 STATUS_STYLES = {
-    "To Apply":     ("E7E6E6", "7F7F7F"),
-    "Applied":      ("DDEBF7", "2E75B6"),
-    "Phone Screen": ("D6EAF8", "1F6391"),
-    "Interviewing": ("FFF2CC", "BF8F00"),
-    "Final Round":  ("FCE4D6", "C55A11"),
-    "Offer":        ("E2EFDA", "548235"),
-    "Accepted":     ("C6EFCE", "006100"),
-    "Rejected":     ("FFC7CE", "9C0006"),
-    "Withdrawn":    ("F2F2F2", "808080"),
-    "Ghosted":      ("EAE3F2", "7030A0"),
+    "To Apply":     ("D9D9D9", "595959"),
+    "Applied":      ("BDD7EE", "1F4E79"),
+    "Phone Screen": ("BDE3F0", "11567A"),
+    "Interviewing": ("FFE699", "7F6000"),
+    "Final Round":  ("F8CBAD", "843C0C"),
+    "Offer":        ("C6E0B4", "375623"),
+    "Accepted":     ("A9D08E", "2C4218"),
+    "Rejected":     ("F4B6BC", "9C0006"),
+    "Withdrawn":    ("E2E2E2", "767171"),
+    "Ghosted":      ("D9CCE8", "5B2C87"),
 }
 STATUS_OPTIONS = list(STATUS_STYLES.keys())
 
@@ -407,7 +407,7 @@ def write_xlsx(path, rows, today):
             c = ws.cell(row=excel_row, column=col, value=r.get(name, ""))
             c.border = border
             c.alignment = wrap if name in ("Notes", "Source Files") else topleft
-            if name == "Cover Letter?":
+            if name in ("Cover Letter?", "Status"):
                 c.alignment = center
             if i % 2 == 1:
                 c.fill = PatternFill("solid", fgColor=stripe)
@@ -432,10 +432,12 @@ def write_xlsx(path, rows, today):
         dv.add(rng)
         # ---- live color-coding: recolors instantly when you pick a status ----
         for status, (fill_hex, font_hex) in STATUS_STYLES.items():
+            edge = Side(style="thin", color=font_hex)
             ws.conditional_formatting.add(rng, CellIsRule(
                 operator="equal", formula=[f'"{status}"'],
                 fill=PatternFill(start_color=fill_hex, end_color=fill_hex, fill_type="solid"),
-                font=Font(bold=True, color=font_hex)))
+                font=Font(bold=True, color=font_hex),
+                border=Border(left=edge, right=edge, top=edge, bottom=edge)))
 
     # ---- widths, freeze, filter ----
     widths = {
