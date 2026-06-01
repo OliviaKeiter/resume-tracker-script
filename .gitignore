@@ -1,0 +1,19 @@
+# Generated output (created when you run the tool)
+job_applications.xlsx
+job_applications.csv
+report_backups/
+
+# Python
+__pycache__/
+*.pyc
+
+# OS / editor cruft
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Keep the sample, ignore any real resumes a user drops in the repo folder
+*.pdf
+*.docx
+*.doc
+!examples/Jane_Doe_Google_ProductManager.pdf

@@ -1,0 +1,7 @@
+# Treat these as binary so Git never applies line-ending conversion
+*.pdf  binary
+*.png  binary
+*.docx binary
+*.doc  binary
+*.zip  binary
+*.xlsx binary
