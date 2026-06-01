@@ -12,6 +12,8 @@
 ![No coding](https://img.shields.io/badge/coding%20required-none-548235)
 ![License](https://img.shields.io/badge/license-MIT-9C0006)
 
+[![⬇ Download Resume Tracker](https://img.shields.io/badge/⬇%20Download-Resume%20Tracker-1F3864?style=for-the-badge)](https://github.com/OliviaKeiter/resume-tracker-script/releases/latest/download/Resume-Tracker.zip)
+
 <img src="assets/preview.png" alt="Preview of the generated job application tracker" width="900">
 
 </div>
@@ -39,7 +41,7 @@ It works for *anyone* on a job hunt — not just developers. If you can rename a
 
 > 🪟 Built for **Windows**. Takes about 5 minutes to set up the first time, then it's one double-click.
 
-1. **Download this project** — click the green **`Code ▾`** button above → **Download ZIP**, then unzip it somewhere (e.g. a `Job Search` folder).
+1. **[⬇ Download Resume-Tracker.zip](https://github.com/OliviaKeiter/resume-tracker-script/releases/latest/download/Resume-Tracker.zip)** and unzip it somewhere (e.g. a `Job Search` folder).
 2. **Install Python** (if you don't have it) from [python.org/downloads](https://www.python.org/downloads/) — on the first installer screen, **tick “Add Python to PATH.”**
 3. **Set your name** — open `update_job_report.py` in Notepad and change the one line near the top:
    ```python

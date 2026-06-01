@@ -17,3 +17,6 @@ desktop.ini
 *.docx
 *.doc
 !examples/Jane_Doe_Google_ProductManager.pdf
+
+# Release asset (uploaded to GitHub Releases, not tracked here)
+*.zip
