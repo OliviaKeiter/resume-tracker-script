@@ -50,7 +50,7 @@ It works for *anyone* on a job hunt - not just developers. If you can rename a f
 4. **Add your resumes** to the same folder, named like the pattern below.
 5. **Double-click `Update Job Report.bat`** → open the shiny new `job_applications.xlsx`. 🎉
 
-📄 Full step-by-step guide: **[HOW TO USE - Read Me First.txt](HOW%20TO%20USE%20-%20Read%20Me%20First.txt)**
+📄 Full step-by-step guide: **[HOW TO USE - Read Me First.md](HOW%20TO%20USE%20-%20Read%20Me%20First.md)**
 
 ---
 
@@ -111,7 +111,7 @@ New roles are added; your statuses, notes, and edits stay exactly as you left th
 | Company split in half (“Sand” not “Sand Cherry”) | Rename to `SandCherry`, or just type it in the sheet |
 | Spreadsheet didn't update | It was open in Excel - close it and run again |
 
-More detail in **[HOW TO USE - Read Me First.txt](HOW%20TO%20USE%20-%20Read%20Me%20First.txt)**.
+More detail in **[HOW TO USE - Read Me First.md](HOW%20TO%20USE%20-%20Read%20Me%20First.md)**.
 
 ---
 
