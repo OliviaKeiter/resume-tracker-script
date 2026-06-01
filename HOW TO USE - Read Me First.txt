@@ -1,9 +1,9 @@
 ============================================================
-   JOB APPLICATION TRACKER  —  HOW TO USE
+   JOB APPLICATION TRACKER  -  HOW TO USE
 ============================================================
 
 This little tool reads the resume files in a folder and builds a tidy,
-color-coded spreadsheet of every job you've applied to — company, job title,
+color-coded spreadsheet of every job you've applied to - company, job title,
 date, status, and a notes column. Run it again whenever you add new resumes
 and it updates the sheet WITHOUT losing anything you've typed in.
 
@@ -23,7 +23,7 @@ a single double-click from then on.
  ONE-TIME SETUP (about 5 minutes)
 ------------------------------------------------------------
 
-STEP 1 — Install Python (only if you don't already have it)
+STEP 1 - Install Python (only if you don't already have it)
   - Go to:  https://www.python.org/downloads/
   - Download and run the installer.
   - VERY IMPORTANT: on the first screen, tick the box that says
@@ -32,7 +32,7 @@ STEP 1 — Install Python (only if you don't already have it)
   (If you skip that box the tool can't find Python. You can re-run the
    installer and tick it.)
 
-STEP 2 — Tell the tool your name
+STEP 2 - Tell the tool your name
   - Right-click  update_job_report.py  ->  Open with  ->  Notepad.
   - Near the top you'll see a line that says:
         YOUR_NAME = "First Last"
@@ -42,7 +42,7 @@ STEP 2 — Tell the tool your name
   - Save the file (Ctrl+S) and close Notepad.
   That's the only edit you ever need to make.
 
-STEP 3 — Put your resumes in this folder
+STEP 3 - Put your resumes in this folder
   - Copy all your resume / application files (PDF or Word) into this same
     folder, next to the .bat file.
   - Name them using the pattern in the next section. <-- this matters!
@@ -79,7 +79,7 @@ A few simple rules:
     (If you wrote Jane_Doe_Sand_Cherry_Consultant the tool would think the
      company is just "Sand". So squash multi-word companies together.)
 
-  * Squished-together titles are fine — the tool adds the spaces for you:
+  * Squished-together titles are fine - the tool adds the spaces for you:
         ...AIProgramManager   ->  AI Program Manager
         ...SrDataScientist    ->  Senior Data Scientist
 
@@ -91,7 +91,7 @@ A few simple rules:
     Cover letters are NOT given their own row (so no duplicates). Instead the
     job's row shows "Cover Letter? = Yes".
 
-  * Don't worry about getting every name perfect — anything the tool guesses
+  * Don't worry about getting every name perfect - anything the tool guesses
     wrong you can simply fix in the spreadsheet afterward, and it remembers
     your fix next time.
 
@@ -120,10 +120,10 @@ It creates (or updates) two files in this folder:
     Offer, Accepted, Rejected, Withdrawn, Ghosted). The cell INSTANTLY
     changes color to match. Everything starts as "Applied".
 
-  * NOTES column: type anything you want — recruiter names, interview dates,
+  * NOTES column: type anything you want - recruiter names, interview dates,
     salary info, follow-up reminders. It's saved and kept forever.
 
-  * COMPANY names are clickable links — click one to open that resume PDF.
+  * COMPANY names are clickable links - click one to open that resume PDF.
 
   * You can also edit the Company, Job Title, or Date if the tool guessed
     something wrong. Your edits are kept the next time you run it.
@@ -159,7 +159,7 @@ The Company column shows your first name, or looks wrong
 
 A company got split in half (e.g. "Sand" instead of "Sand Cherry")
   -> Rename the file so the company is one chunk: SandCherry. Or just type
-     the correct company into the spreadsheet — it'll be remembered.
+     the correct company into the spreadsheet - it'll be remembered.
 
 The spreadsheet didn't update
   -> It was probably open in Excel. Close it and run the .bat again.
