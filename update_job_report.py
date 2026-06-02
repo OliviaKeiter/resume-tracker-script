@@ -67,6 +67,8 @@ COVER_PATTERN  = re.compile(r"cover", re.IGNORECASE)      # cover letters
 SKIP_PATTERNS  = (
     COVER_PATTERN,
     re.compile(r"interview", re.IGNORECASE),              # interview prep
+    re.compile(r"career.?record", re.IGNORECASE),         # master career record
+    re.compile(r"master.?(resume|cv)", re.IGNORECASE),    # master resume / CV
 )
 
 # ============================================================================
@@ -77,9 +79,22 @@ SKIP_PATTERNS  = (
 # ============================================================================
 YOUR_NAME = "First Last"
 
-_name_tokens = [re.escape(t) for t in YOUR_NAME.split()]
-NAME_PREFIX = re.compile(r"^" + r"[ _]*".join(_name_tokens) + r"[ _\-]*", re.IGNORECASE)
-ACRONYMS    = {"AI", "TPM", "SHI", "HR", "IT", "US", "ML"}
+_NAME_TOKENS = [t for t in YOUR_NAME.split() if t]
+ACRONYMS     = {"AI", "TPM", "SHI", "HR", "IT", "US", "ML"}
+
+# Trailing filename bits that are version/variant noise, not part of a job title.
+NOISE_TOKENS = {"nz", "resume", "cv", "copy", "final", "draft", "new", "old",
+                "pg", "doc", "docx", "pdf"}
+
+# If the first chunk after your name is one of these, the filename is a role with
+# no company in it (e.g. "AI_Automation_Lead"), so the whole thing is job title.
+TITLE_LEAD_WORDS = {
+    "ai", "ml", "senior", "sr", "junior", "jr", "head", "chief", "vp",
+    "principal", "director", "manager", "mgr", "technical", "program",
+    "operations", "ops", "automation", "transformation", "enablement",
+    "deployment", "advisor", "strategist", "architect", "coordinator",
+    "analyst", "engineer", "consultant", "specialist", "lead",
+}
 
 
 # ---------------------------------------------------------------- name parsing
@@ -104,22 +119,46 @@ def prettify(s: str) -> str:
             out.append(w[:1].upper() + w[1:])
     res = " ".join(out)
     res = re.sub(r"\bSr\b", "Senior", res)
+    res = re.sub(r"\bMgr\b", "Manager", res)
     res = re.sub(r"\bAi\b", "AI", res)
     return res.strip()
 
 
+def _strip_name_prefix(stem: str) -> str:
+    """Remove leading file-ordering digits (00_, 01_) and your name from the front."""
+    rest = re.sub(r"^\d+[ _\-]*", "", stem)
+    for tok in _NAME_TOKENS:                       # strips "Olivia_", "Keiter_", etc.
+        rest = re.sub(r"^" + re.escape(tok) + r"[ _\-]*", "", rest, flags=re.IGNORECASE)
+    return rest.strip(" _-")
+
+
+def _strip_noise(tokens):
+    """Drop trailing version/variant tokens like _NZ, _v3, _2pg, _1, _Resume."""
+    out = list(tokens)
+    while out:
+        last = out[-1].lower()
+        if (last in NOISE_TOKENS or re.fullmatch(r"v?\d+", last)
+                or re.fullmatch(r"\d+pg", last)):
+            out.pop()
+        else:
+            break
+    return out
+
+
+def _looks_like_title(chunk: str) -> bool:
+    """True if a chunk reads like the start of a job title (so there's no company)."""
+    return any(w in TITLE_LEAD_WORDS for w in split_camel(chunk).lower().split())
+
+
 def parse_company_title(stem: str):
-    """Strip the name prefix, then split the remainder into (company, title)."""
-    rest = NAME_PREFIX.sub("", stem).strip(" _-")
-    # split on the first '_' or '-' that separates company from title
-    m = re.search(r"[_\-]", rest)
-    if m:
-        company = rest[: m.start()]
-        title = rest[m.end():]
-    else:
-        company = ""          # company not encoded in the filename
-        title = rest
-    return prettify(company), prettify(title)
+    """Best-effort (company, title) from a filename. Always editable in the sheet."""
+    rest = _strip_name_prefix(stem)
+    tokens = _strip_noise([t for t in re.split(r"[_\-]", rest) if t])
+    if not tokens:
+        return "", ""                              # generic resume / nothing useful
+    if _looks_like_title(tokens[0]):               # e.g. "AI_Automation_Lead"
+        return "", prettify("_".join(tokens))
+    return prettify(tokens[0]), prettify("_".join(tokens[1:]))
 
 
 def is_skipped(name: str) -> bool:
@@ -182,6 +221,15 @@ FIELDS = [
 ]
 
 
+def _sanitize_existing(rows):
+    """Repair rows where a filename leaked into Company (old empty-hyperlink bug)."""
+    for r in rows:
+        c = (r.get("Company") or "").strip()
+        if c.lower().endswith((".pdf", ".docx", ".doc")):
+            r["Company"] = ""
+    return rows
+
+
 def load_existing(folder: str):
     """Read prior edits, preferring the .xlsx (what you edit) then the .csv."""
     xlsx_path = os.path.join(folder, XLSX_NAME)
@@ -189,10 +237,10 @@ def load_existing(folder: str):
     if os.path.exists(xlsx_path):
         rows = load_existing_xlsx(xlsx_path)
         if rows:
-            return rows
+            return _sanitize_existing(rows)
     if os.path.exists(csv_path):
         with open(csv_path, newline="", encoding="utf-8-sig") as f:
-            return list(csv.DictReader(f))
+            return _sanitize_existing(list(csv.DictReader(f)))
     return []
 
 
@@ -411,9 +459,11 @@ def write_xlsx(path, rows, today):
                 c.alignment = center
             if i % 2 == 1:
                 c.fill = PatternFill("solid", fgColor=stripe)
-        # make the Company cell a clickable link to the resume PDF
+        # make the Company cell a clickable link to the resume PDF.
+        # Only when there IS company text -- hyperlinking an empty cell makes
+        # Excel inject the file path into the cell as visible text.
         target = _resume_link(r)
-        if target:
+        if target and (r.get("Company") or "").strip():
             cc = ws.cell(row=excel_row, column=FIELDS.index("Company") + 1)
             cc.hyperlink = target
             cc.font = Font(color=link, underline="single", bold=True)
